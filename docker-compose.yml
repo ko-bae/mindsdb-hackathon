@@ -1,0 +1,23 @@
+version: "2.4"
+services:
+  mindsdb:
+    container_name: mindsdb_container
+    image: mindsdb/mindsdb:latest
+    ports:
+      - "47334:47334"
+      - "47335:47335"
+    # environment:
+    #   - MKL_SERVICE_FORCE_INTEL=1
+
+    volumes:
+      - ./mdb_data:/root/mdb_storage
+
+  jupyter:
+    container_name: notebook_container
+    image: quay.io/jupyter/scipy-notebook
+    ports:
+      - "8895:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    entrypoint: jupyter notebook
+
