@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from guidance import models, gen
 import uvicorn
 from contextlib import asynccontextmanager
+import yaml
+import os
 
 class CompletionRequest(BaseModel):
     model : str
@@ -19,8 +21,14 @@ async def lifespan(app: FastAPI):
 
     It would be preferable to read the model path form a yaml or something
     """
-    # Load the ML model
-    avail_models["phi3"] = models.LlamaCpp("/Users/agreen/LLMs/phi-3-mini-128K-Instruct_q4_k_m.gguf", n_gpu_layers=-1)
+    ## Check env variables to see if a YAML has been set, if not, fallback to default
+    yaml_path = os.getenv("CONFIG_YAML", "/code/agent/default_config.yaml")
+    with open(yaml_path, 'r') as stream:
+        config = yaml.safe_load(stream)
+    # Load the ML models
+    for model in config['models']:
+        for model_name, model_path in model.items():
+            avail_models[model_name] = models.LlamaCpp(model_path.strip(), n_gpu_layers=-1)
     yield
     # Clean up the ML models and release the resources
     avail_models.clear()

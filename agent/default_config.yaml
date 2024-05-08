@@ -1,0 +1,2 @@
+models:
+  - phi3: '/models/phi-3-mini-128K-Instruct_q4_k_m.gguf'
