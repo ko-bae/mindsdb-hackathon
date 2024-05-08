@@ -21,3 +21,13 @@ services:
       - ./notebooks:/home/jovyan/work
     entrypoint: jupyter notebook
 
+
+  shim:
+    build:
+      context: .
+      dockerfile: agent/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/models
+
